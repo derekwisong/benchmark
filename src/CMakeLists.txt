@@ -4,8 +4,13 @@ endif()
 
 IF (WIN32)
   # set stuff for windows
-  set(CMAKE_CXX_FLAGS "/O1 /EHsc")
-  set(CMAKE_CXX_FLAGS_DEBUG "/Z7")
+
+  # clang
+  set(CMAKE_CXX_FLAGS "-Wall -Wextra -O1")
+
+  # msvc
+  #set(CMAKE_CXX_FLAGS "/O1 /EHsc")
+  #set(CMAKE_CXX_FLAGS_DEBUG "/Z7")
 ELSE()
 # set stuff for other systems
   set(CMAKE_CXX_FLAGS "-Wall -Wextra -O1")
