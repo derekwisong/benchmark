@@ -44,7 +44,11 @@ void open_close_fstream(const char* path) {
 }
 
 void open_close_fopen(const char* path) {
-  FILE* file = fopen(path, "rb");
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored  "-Wdeprecated-declarations"
+    FILE* file = fopen(path, "rb");
+  #pragma GCC diagnostic pop
+
   fclose(file);
 }
 
