@@ -99,6 +99,7 @@ int main(int, char **argv) {
   benchmark("stat file", RUNTIME, [f = argv[0]] { stat_file(f); });
   benchmark("fill array with values", RUNTIME, [&]{std::fill(integers, integers + NUM_INTEGERS, 100);});
   benchmark("array random access", RUNTIME, [&]{random_access(integers, NUM_INTEGERS);});
+
   delete[] integers;
 
 }
