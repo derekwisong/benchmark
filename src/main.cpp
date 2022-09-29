@@ -132,7 +132,9 @@ template <typename Func> void benchmark(std::string description, unsigned int mi
 
 int main(int, char **argv) {
   std::srand(std::time(nullptr));
+  // runtime of the test, repeat the benchmark as may times in this many milliseconds
   static const unsigned int RUNTIME = 1000;
+  // for tests that allocate integer array
   static const size_t NUM_INTEGERS = 1000000;
   int* integers = new int[NUM_INTEGERS];
 
@@ -150,5 +152,4 @@ int main(int, char **argv) {
   benchmark("sleep 2 seconds", RUNTIME, []{std::this_thread::sleep_for(std::chrono::seconds(2));});
 
   delete[] integers;
-
 }
