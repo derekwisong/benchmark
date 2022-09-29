@@ -1,9 +1,13 @@
+#include <bits/chrono.h>
 #include <chrono>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <tuple>
+#include <map>
+#include <string>
+#include <thread>
 
 #include <sys/stat.h>
 
@@ -58,28 +62,72 @@ void stat_file(const char *path) {
   stat(path, &st);
 }
 
-template <typename Func> std::tuple<size_t, double, double> repeat_for_time(Func &&func, unsigned int milliseconds) {
-  auto start = std::chrono::system_clock::now();
-  auto duration = std::chrono::milliseconds(milliseconds);
-  auto end = start + duration;
+template <typename Func> std::tuple<double, double, double> repeat_for_time(Func &&func, unsigned int milliseconds) {
+  namespace chrono = std::chrono;
+  auto start = chrono::system_clock::now();
+  auto scheduled_duration = chrono::milliseconds(milliseconds);
+  auto scheduled_end = start + scheduled_duration;
   size_t counter = 0;
 
-  while (std::chrono::system_clock::now() < end) {
+  while (chrono::system_clock::now() < scheduled_end) {
     func();
     ++counter;
   }
 
-  auto seconds = static_cast<double>(milliseconds) / 1000;
+  auto actual_end = chrono::system_clock::now();
+  auto actual_duration = actual_end - start;
+  auto seconds = static_cast<double>(chrono::duration_cast<chrono::milliseconds>(actual_duration).count()) / 1000;
+
   double calls_per_second = static_cast<double>(counter) / seconds;
   double seconds_per_call = static_cast<double>(seconds) / counter;
-  return std::make_tuple(counter, calls_per_second, seconds_per_call);
+  double scaled_counter = static_cast<double>(counter) / (actual_duration / scheduled_duration);
+
+  return std::make_tuple(scaled_counter, calls_per_second, seconds_per_call);
+}
+
+std::string format_cps(double cps) {
+  static const std::map<double, std::string> scales = {
+    {1e3, "ms"},
+    {1e6, "us"},
+    {1e9, "ns"},
+  };
+
+  for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) {
+    const auto scale = iter->first;
+    const auto& name = iter->second;
+    if (cps >= scale) { 
+      return std::to_string(cps / scale) + " calls/" + name;
+    }
+  }
+
+  return std::to_string(cps) + " calls/sec";
+}
+
+
+std::string format_spc(double spc) {
+  static const std::map<double, std::string> scales = {
+    {1e-9, "ns"},
+    {1e-6, "us"},
+    {1e-3, "ms"},
+  };
+
+  for (auto iter = scales.begin(); iter != scales.end(); ++iter) {
+    const auto scale = iter->first;
+    const auto& name = iter->second;
+    if (spc <= scale) { 
+      return std::to_string(spc / scale) + " " + name + "/call";
+    }
+  }
+
+  return std::to_string(spc) + " sec/call";
 }
 
 template <typename Func> void benchmark(std::string description, unsigned int milliseconds, Func &&func) {
   auto [count, calls_per_sec, sec_per_call] = repeat_for_time(func, milliseconds);
-  std::cout << std::left << std::setw(30) << description << std::right << std::setw(12) << count << " calls in "
-            << milliseconds << "ms " << std::setw(15) << calls_per_sec << " calls/sec " << std::setw(15) << sec_per_call
-            << " sec/call" << std::endl;
+  std::cout << std::left << std::setw(30) << description
+            << std::right << std::setw(15) << count << " calls in " << milliseconds << "ms "
+            << std::right << std::setw(25) << format_cps(calls_per_sec)
+            << std::right << std::setw(25) << format_spc(sec_per_call) << std::endl;
 }
 
 int main(int, char **argv) {
@@ -99,6 +147,7 @@ int main(int, char **argv) {
   benchmark("stat file", RUNTIME, [f = argv[0]] { stat_file(f); });
   benchmark("fill array with values", RUNTIME, [&]{std::fill(integers, integers + NUM_INTEGERS, 100);});
   benchmark("array random access", RUNTIME, [&]{random_access(integers, NUM_INTEGERS);});
+  benchmark("sleep 2 seconds", RUNTIME, []{std::this_thread::sleep_for(std::chrono::seconds(2));});
 
   delete[] integers;
 
