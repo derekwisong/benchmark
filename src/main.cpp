@@ -17,7 +17,8 @@ public:
 
 int main(int, char **argv) {
   std::srand(std::time(nullptr));
-  // runtime of the test, repeat the benchmark as may times in this many milliseconds
+  // runtime of the test, repeat the benchmark as may times in this many
+  // milliseconds
   static const unsigned int RUNTIME = 100;
   // for tests that allocate integer array
   using array_t = int;

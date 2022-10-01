@@ -1,7 +1,3 @@
 #include "bench.h"
 
-namespace bench {
-
-
-
-} // namespace bench
+namespace bench {} // namespace bench

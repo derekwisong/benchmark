@@ -1,5 +1,3 @@
 #include "bench/timing.h"
 
-namespace bench::timing {
-
-}
+namespace bench::timing {}

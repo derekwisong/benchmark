@@ -1,5 +1,3 @@
 #include "bench/memory.h"
 
-namespace bench::memory {
-
-}
+namespace bench::memory {}

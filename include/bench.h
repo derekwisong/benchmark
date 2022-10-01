@@ -7,7 +7,6 @@
 #include "bench/fileio.h"
 #include "bench/memory.h"
 
-
 namespace bench {
 
 class BenchmarkRunner {
@@ -23,4 +22,4 @@ public:
   }
 };
 
-} // namespace benchmarks
+} // namespace bench

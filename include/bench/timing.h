@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <chrono>
 #include <tuple>
@@ -33,4 +33,4 @@ template <typename Func> timed_run_t repeat_for_time(Func &&func, unsigned int m
 
   return std::make_tuple(scaled_counter, calls_per_second, seconds_per_call);
 }
-}
+} // namespace bench::timing
