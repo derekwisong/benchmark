@@ -8,7 +8,7 @@
 #include "bench/memory.h"
 
 
-namespace benchmarks {
+namespace bench {
 
 class BenchmarkRunner {
   int runtime_ms;

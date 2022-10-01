@@ -27,7 +27,7 @@ int main(int, char **argv) {
   auto array_filler = [&integers] { std::fill(integers.array, integers.array + NUM_INTS, 100); };
   auto random_access = [&integers] { bench::memory::random_access(integers.array, NUM_INTS); };
 
-  benchmarks::BenchmarkRunner runner(RUNTIME);
+  bench::BenchmarkRunner runner(RUNTIME);
   runner.run("sleep 2 seconds", [] { std::this_thread::sleep_for(std::chrono::seconds(2)); });
   runner.run("malloc/free (2 doubles)", bench::memory::malloc_free<sizeof(TwoDoubles)>);
   runner.run("new/delete (2 doubles)", bench::memory::new_delete<TwoDoubles>);
