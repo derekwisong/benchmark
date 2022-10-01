@@ -34,3 +34,6 @@
 # CMake
 /build
 /.cache
+
+# IDE: vscode
+/.vscode
