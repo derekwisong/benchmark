@@ -1,4 +1,4 @@
-#include "benchmarks.h"
+#include "bench.h"
 
 #include <thread>
 
@@ -25,20 +25,20 @@ int main(int, char **argv) {
   auto array_description = std::to_string(NUM_INTS) + " ints";
   auto integers = Array<array_t>(NUM_INTS);
   auto array_filler = [&integers] { std::fill(integers.array, integers.array + NUM_INTS, 100); };
-  auto random_access = [&integers] { benchmarks::random_access(integers.array, NUM_INTS); };
+  auto random_access = [&integers] { bench::memory::random_access(integers.array, NUM_INTS); };
 
   benchmarks::BenchmarkRunner runner(RUNTIME);
   runner.run("sleep 2 seconds", [] { std::this_thread::sleep_for(std::chrono::seconds(2)); });
-  runner.run("malloc/free (2 doubles)", benchmarks::malloc_free<sizeof(TwoDoubles)>);
-  runner.run("new/delete (2 doubles)", benchmarks::new_delete<TwoDoubles>);
-  runner.run("malloc/free (" + array_description + " ints)", benchmarks::malloc_free<sizeof(array_t) * NUM_INTS>);
-  runner.run("new/delete (" + array_description + " ints)", benchmarks::new_delete_a<array_t, NUM_INTS>);
-  runner.run("square int", benchmarks::square<20>);
-  runner.run("draw random int", benchmarks::random_int);
-  runner.run("draw random double", benchmarks::random_double);
-  runner.run("open/close file (fstream)", [f = argv[0]] { benchmarks::open_close_fstream(f); });
-  runner.run("open/close file (fopen)", [f = argv[0]] { benchmarks::open_close_fopen(f); });
-  runner.run("stat file", [f = argv[0]] { benchmarks::stat_file(f); });
+  runner.run("malloc/free (2 doubles)", bench::memory::malloc_free<sizeof(TwoDoubles)>);
+  runner.run("new/delete (2 doubles)", bench::memory::new_delete<TwoDoubles>);
+  runner.run("malloc/free (" + array_description + " ints)", bench::memory::malloc_free<sizeof(array_t) * NUM_INTS>);
+  runner.run("new/delete (" + array_description + " ints)", bench::memory::new_delete_a<array_t, NUM_INTS>);
+  runner.run("square int", bench::cpu::square<20>);
+  runner.run("draw random int", bench::cpu::random_int);
+  runner.run("draw random double", bench::cpu::random_double);
+  runner.run("open/close file (fstream)", [f = argv[0]] { bench::fileio::open_close_fstream(f); });
+  runner.run("open/close file (fopen)", [f = argv[0]] { bench::fileio::open_close_fopen(f); });
+  runner.run("stat file", [f = argv[0]] { bench::fileio::stat_file(f); });
   runner.run("fill array of " + array_description, array_filler);
   runner.run("random access from " + array_description, random_access);
 }

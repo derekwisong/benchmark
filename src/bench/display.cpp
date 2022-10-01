@@ -1,38 +1,11 @@
-#include "benchmarks.h"
+#include "bench/display.h"
+#include "bench/timing.h"
 
-#include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <map>
-#include <sys/stat.h>
 
-
-namespace benchmarks {
-
-void random_int() {
-  auto val = std::rand();
-  (void)val;
-}
-
-void random_double() {
-  auto val = static_cast<double>(std::rand()) / RAND_MAX;
-  (void)val;
-}
-
-void open_close_fstream(const char *path) {
-  std::fstream file;
-  file.open(path, std::ios::in);
-  file.close();
-}
-
-void open_close_fopen(const char *path) {
-  FILE *file = fopen(path, "rb");
-  fclose(file);
-}
-
-void stat_file(const char *path) {
-  struct stat st;
-  stat(path, &st);
-}
-
+namespace bench::display {
 std::string format_cps(double cps) {
   static const std::map<double, std::string> scales = {
       {1e3, "ms"},
@@ -69,4 +42,11 @@ std::string format_spc(double spc) {
   return std::to_string(spc) + " sec/call";
 }
 
-} // namespace benchmarks
+void print_run_results(const std::string &description, int runtime_ms, const bench::timing::timed_run_t &results) {
+  auto [count, calls_per_sec, sec_per_call] = results;
+  std::cout << std::left << std::setw(35) << description << std::right << std::setw(15) << count << " calls in "
+            << runtime_ms << "ms " << std::right << std::setw(25) << format_cps(calls_per_sec) << std::right
+            << std::setw(25) << format_spc(sec_per_call) << std::endl;
+}
+
+} // namespace bench::display
