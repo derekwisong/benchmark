@@ -1,15 +1,46 @@
 #!/usr/bin/env python
+"""
+Auto-format all the code in the benchmark repo.
+
+Usage:
+
+    code-format [PATH]
+
+    PATH is optional path to benchmark repo. Default is current directory.
+"""
 import os
 import sys
 from pathlib import Path
+from typing import Callable, List
 
 
-def format_file(path):
-    print(f"Formatting {path}")
+def clang_format(path) -> None:
+    """
+    Format a file with clang-format.
+    """
+    print(f"Running clang-format on {path}")
     os.system(f"clang-format -i {path}")
 
 
-def format_files(root: Path = Path(), extensions=None, exclude_dirs=None) -> None:
+def autopep8_format(path) -> None:
+    """
+    Format a file with autopep8.
+    """
+    print(f"Running autopep8 on {path}")
+    os.system(f"autopep8 -i {path}")
+
+
+def format_files(root: Path, extensions: List[str] = None, exclude_dirs: List[str] = None,
+                 formatter: Callable = None) -> None:
+    """
+    Search for and format all files found under a directory.
+
+    Args:
+        root (pathlib.Path): Path to crawl looking for files to format
+        extensions (List[str]): File extensions to look for
+        exclude_dirs (List[str]): List of directories (relative to root) to exclude from the search.
+        formatter (Callable): The function to call on each found file path
+    """
     extensions = extensions or []
     exclude_dirs = [Path(root) / d for d in exclude_dirs or []]
 
@@ -17,18 +48,28 @@ def format_files(root: Path = Path(), extensions=None, exclude_dirs=None) -> Non
         for name in filenames:
             path = Path(dirpath) / name
             if any([name.endswith(ext) for ext in extensions]):
-                format_file(path)
+                formatter(path)
 
         # prune excluded directories
-        dirnames[:] = [d for d in dirnames if Path(dirpath) / d not in exclude_dirs]
+        dirnames[:] = [d for d in dirnames if Path(
+            dirpath) / d not in exclude_dirs]
 
 
 def main() -> None:
-    root = sys.argv[1] if len(sys.argv) > 1 else ""
-    extensions = [".h", ".cpp"]
-    exclude_dirs = ["build"]
+    """
+    Find and format the source code files in this project.
+    """
+    root = Path(sys.argv[1] if len(sys.argv) > 1 else "")
 
-    format_files(root=Path(root), extensions=extensions, exclude_dirs=exclude_dirs)
+    # Format C++ code with clang-format
+    format_files(
+        root,
+        extensions=[".h", ".cpp"],
+        exclude_dirs=["build"],
+        formatter=clang_format)
+
+    # Format python script (this script)
+    autopep8_format(root / "format-code")
 
 
 if __name__ == "__main__":
