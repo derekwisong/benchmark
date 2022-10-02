@@ -14,7 +14,14 @@ void open_close_fstream(const char *path) {
 }
 
 void open_close_fopen(const char *path) {
-  FILE *file = fopen(path, "rb");
+  FILE *file = nullptr;
+  errno_t err = fopen_s(&file, path, "rb");
+
+  if (err != 0) {
+    // the file was not opened
+    return;
+  }
+
   fclose(file);
 }
 
