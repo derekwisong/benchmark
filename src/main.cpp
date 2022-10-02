@@ -32,9 +32,11 @@ int main(int, char **argv) {
   runner.run("sleep 2 seconds", [] { std::this_thread::sleep_for(std::chrono::seconds(2)); });
   runner.run("malloc/free (2 doubles)", bench::memory::malloc_free<sizeof(TwoDoubles)>);
   runner.run("new/delete (2 doubles)", bench::memory::new_delete<TwoDoubles>);
-  runner.run("malloc/free (" + array_description + " ints)", bench::memory::malloc_free<sizeof(array_t) * NUM_INTS>);
-  runner.run("new/delete (" + array_description + " ints)", bench::memory::new_delete_a<array_t, NUM_INTS>);
+  runner.run("malloc/free (" + array_description + ")", bench::memory::malloc_free<sizeof(array_t) * NUM_INTS>);
+  runner.run("new/delete (" + array_description + ")", bench::memory::new_delete_a<array_t, NUM_INTS>);
   runner.run("square int", bench::cpu::square<20>);
+  runner.run(bench::Benchmark("square int (Benchmark)", bench::cpu::square<20>));
+
   runner.run("draw random int", bench::cpu::random_int);
   runner.run("draw random double", bench::cpu::random_double);
   runner.run("open/close file (fstream)", [f = argv[0]] { bench::fileio::open_close_fstream(f); });
