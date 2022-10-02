@@ -34,3 +34,9 @@
 # CMake
 /build
 /.cache
+
+# IDE: vscode
+/.vscode
+
+# Python virtual environment
+/env
