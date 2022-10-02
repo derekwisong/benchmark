@@ -36,7 +36,6 @@ int main(int, char **argv) {
   runner.run("new/delete (" + array_description + ")", bench::memory::new_delete_a<array_t, NUM_INTS>);
   runner.run("square int", bench::cpu::square<20>);
   runner.run(bench::Benchmark("square int (Benchmark)", bench::cpu::square<20>));
-
   runner.run("draw random int", bench::cpu::random_int);
   runner.run("draw random double", bench::cpu::random_double);
   runner.run("open/close file (fstream)", [f = argv[0]] { bench::fileio::open_close_fstream(f); });
