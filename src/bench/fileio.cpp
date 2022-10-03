@@ -7,13 +7,13 @@
 
 namespace bench::fileio {
 
-void open_close_fstream(const char *path) {
+void open_close_fstream(const char* path) {
   std::fstream file;
   file.open(path, std::ios::in);
   file.close();
 }
 
-void open_close_fopen(const char *path) {
+void open_close_fopen(const char* path) {
   FILE* file = nullptr;
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -33,7 +33,7 @@ void open_close_fopen(const char *path) {
   fclose(file);
 }
 
-void stat_file(const char *path) {
+void stat_file(const char* path) {
   struct stat st;
   stat(path, &st);
 }

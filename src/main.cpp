@@ -1,7 +1,6 @@
 #include "bench.h"
 #include "bench/cpu.h"
 
-
 struct TwoDoubles {
   double x = 0;
   double y = 0;
@@ -10,13 +9,13 @@ struct TwoDoubles {
 template <typename Type> class Array {
 public:
   const size_t size;
-  Type *const array;
+  Type* const array;
 
   Array(size_t size) : size(size), array(new Type[size]) {}
   ~Array() { delete[] array; }
 };
 
-int main(int, char **argv) {
+int main(int, char** argv) {
   std::srand(std::time(nullptr));
   // runtime of the test, repeat the benchmark as may times as possible in this many milliseconds
   static const unsigned int RUNTIME = 100;

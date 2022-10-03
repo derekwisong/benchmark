@@ -9,7 +9,7 @@ namespace chrono = std::chrono;
 
 using timed_run_t = std::tuple<double, double, double>;
 
-template <typename Func> timed_run_t repeat_for_time(Func &&func, unsigned int milliseconds) {
+template <typename Func> timed_run_t repeat_for_time(Func&& func, unsigned int milliseconds) {
   using chrono::duration_cast;
   using clock_t = chrono::steady_clock;
 

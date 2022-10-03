@@ -15,7 +15,7 @@ std::string format_cps(double cps) {
 
   for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) {
     const auto scale = iter->first;
-    const auto &name = iter->second;
+    const auto& name = iter->second;
     if (cps >= scale) {
       return std::to_string(cps / scale) + " calls/" + name;
     }
@@ -33,7 +33,7 @@ std::string format_spc(double spc) {
 
   for (auto iter = scales.begin(); iter != scales.end(); ++iter) {
     const auto level = iter->first;
-    const auto &[scale, name] = iter->second;
+    const auto& [scale, name] = iter->second;
     if (spc < level) {
       return std::to_string(spc / scale) + " " + name + "/call";
     }
@@ -42,7 +42,7 @@ std::string format_spc(double spc) {
   return std::to_string(spc) + " sec/call";
 }
 
-void print_run_results(const std::string &description, int runtime_ms, const bench::timing::timed_run_t &results) {
+void print_run_results(const std::string& description, int runtime_ms, const bench::timing::timed_run_t& results) {
   auto [count, calls_per_sec, sec_per_call] = results;
   std::cout << std::left << std::setw(35) << description << std::right << std::setw(15) << count << " calls in "
             << runtime_ms << "ms " << std::right << std::setw(25) << format_cps(calls_per_sec) << std::right

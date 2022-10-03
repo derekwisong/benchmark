@@ -20,7 +20,7 @@ template <typename Type, size_t count> void new_delete_a() {
   delete[] obj;
 }
 
-template <typename Ptr> void random_access(const Ptr *array, size_t size) {
+template <typename Ptr> void random_access(const Ptr* array, size_t size) {
   auto val = array[std::rand() % size];
   (void)val;
 }

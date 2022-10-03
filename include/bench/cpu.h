@@ -10,7 +10,9 @@ template <int val> void square() {
   (void)result;
 }
 
-template <typename Duration> class BusyLoop {
+template <typename Duration>
+
+class BusyLoop {
   const Duration duration;
 
 public:
@@ -27,9 +29,7 @@ template <typename Duration> class Sleeper {
 
 public:
   Sleeper(Duration duration) : duration(duration){};
-  void operator()() const {
-    std::this_thread::sleep_for(duration);
-  }
+  void operator()() const { std::this_thread::sleep_for(duration); }
 };
 
 void random_int();
