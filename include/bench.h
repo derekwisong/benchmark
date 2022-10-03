@@ -9,6 +9,17 @@
 
 namespace bench {
 
+template <typename Func> class Benchmark {
+  const std::string name;
+  const Func &&func;
+
+public:
+  Benchmark(std::string name, const Func &&func) : name(std::move(name)), func(std::move(func)) {}
+  const std::string &get_name() const { return name; }
+  void run() const { func(); };
+  void operator()() const { run(); }
+};
+
 class BenchmarkRunner {
   int runtime_ms;
 
@@ -16,9 +27,13 @@ public:
   BenchmarkRunner(int runtime_ms) : runtime_ms(runtime_ms) {}
   BenchmarkRunner() : BenchmarkRunner(1000){};
 
-  template <typename Func> void run(std::string description, Func &&func) {
-    auto results = bench::timing::repeat_for_time(func, runtime_ms);
-    bench::display::print_run_results(description, runtime_ms, results);
+  template <typename Func> void run(std::string description, const Func &&func) {
+    run(Benchmark{std::move(description), std::move(func)});
+  }
+
+  template <typename Func> void run(const Benchmark<Func> &benchmark) {
+    auto results = bench::timing::repeat_for_time(benchmark, runtime_ms);
+    bench::display::print_run_results(benchmark.get_name(), runtime_ms, results);
   }
 };
 
