@@ -1,6 +1,6 @@
 #include "bench.h"
+#include "bench/cpu.h"
 
-#include <thread>
 
 struct TwoDoubles {
   double x = 0;
@@ -27,13 +27,13 @@ int main(int, char **argv) {
   auto integers = Array<array_t>(NUM_INTS);
 
   bench::BenchmarkRunner runner(RUNTIME);
-  runner.run("sleep 2 seconds", [] { std::this_thread::sleep_for(std::chrono::seconds(2)); });
-  runner.run("sleep 1 ms", [] { std::this_thread::sleep_for(std::chrono::milliseconds(1)); });
-  runner.run("sleep 100 us", [] { std::this_thread::sleep_for(std::chrono::microseconds(100)); });
+  runner.run("sleep 2 seconds", bench::cpu::Sleeper(std::chrono::seconds(2)));
+  runner.run("sleep 1 ms", bench::cpu::Sleeper(std::chrono::milliseconds(1)));
+  runner.run("sleep 100 us", bench::cpu::Sleeper(std::chrono::microseconds(100)));
   runner.run("busyloop 100 us", bench::cpu::BusyLoop(std::chrono::microseconds(100)));
-  runner.run("sleep 1 us", [] { std::this_thread::sleep_for(std::chrono::microseconds(1)); });
+  runner.run("sleep 1 us", bench::cpu::Sleeper(std::chrono::microseconds(1)));
   runner.run("busyloop 1 us", bench::cpu::BusyLoop(std::chrono::microseconds(1)));
-  runner.run("sleep 1 ns", [] { std::this_thread::sleep_for(std::chrono::nanoseconds(1)); });
+  runner.run("sleep 1 ns", bench::cpu::Sleeper(std::chrono::nanoseconds(1)));
   runner.run("busyloop 1 ns", bench::cpu::BusyLoop(std::chrono::nanoseconds(1)));
   runner.run("malloc/free (2 doubles)", bench::memory::malloc_free<sizeof(TwoDoubles)>);
   runner.run("new/delete (2 doubles)", bench::memory::new_delete<TwoDoubles>);

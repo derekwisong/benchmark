@@ -14,13 +14,21 @@ void open_close_fstream(const char *path) {
 }
 
 void open_close_fopen(const char *path) {
-  FILE *file = nullptr;
+  FILE* file = nullptr;
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
   errno_t err = fopen_s(&file, path, "rb");
 
   if (err != 0) {
     // the file was not opened
     return;
   }
+#else
+  file = std::fopen(path, "rb");
+  if (!file) {
+    return;
+  }
+#endif
 
   fclose(file);
 }

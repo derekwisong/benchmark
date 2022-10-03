@@ -1,6 +1,8 @@
 #pragma once
 
 #include <chrono>
+#include <thread>
+
 namespace bench::cpu {
 
 template <int val> void square() {
@@ -17,6 +19,16 @@ public:
     const auto end = std::chrono::steady_clock::now() + duration;
     while (std::chrono::steady_clock::now() < end) {
     };
+  }
+};
+
+template <typename Duration> class Sleeper {
+  const Duration duration;
+
+public:
+  Sleeper(Duration duration) : duration(duration){};
+  void operator()() const {
+    std::this_thread::sleep_for(duration);
   }
 };
 
