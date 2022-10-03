@@ -42,7 +42,7 @@ add_library(bench
   "src/bench/timing.cpp"
   ${HEADER_FILES})
 
-target_include_directories(bench PRIVATE include)
+target_include_directories(bench PUBLIC include)
 set_property(TARGET bench PROPERTY CXX_STANDARD 17)
 
 add_executable(benchmark src/main.cpp ${HEADER_FILES})
@@ -54,5 +54,4 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
-include(CTest)
-enable_testing()
+add_subdirectory(tests)
