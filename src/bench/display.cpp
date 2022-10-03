@@ -25,16 +25,16 @@ std::string format_cps(double cps) {
 }
 
 std::string format_spc(double spc) {
-  static const std::map<double, std::string> scales = {
-      {1e-9, "ns"},
-      {1e-6, "us"},
-      {1e-3, "ms"},
+  static const std::map<double, std::pair<double, std::string>> scales = {
+      {1e-6, {1e-9, "ns"}},
+      {1e-3, {1e-6, "us"}},
+      {1e-0, {1e-3, "ms"}},
   };
 
   for (auto iter = scales.begin(); iter != scales.end(); ++iter) {
-    const auto scale = iter->first;
-    const auto &name = iter->second;
-    if (spc <= scale) {
+    const auto level = iter->first;
+    const auto &[scale, name] = iter->second;
+    if (spc < level) {
       return std::to_string(spc / scale) + " " + name + "/call";
     }
   }
