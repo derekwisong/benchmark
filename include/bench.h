@@ -6,15 +6,16 @@
 #include "bench/cpu.h"
 #include "bench/fileio.h"
 #include "bench/memory.h"
+#include <type_traits>
 
 namespace bench {
 
 template <typename Func> class Benchmark {
   const std::string name;
-  const Func&& func;
+  typename std::conditional<std::is_function<Func>::value, typename std::add_pointer<Func>::type, Func>::type func;
 
 public:
-  Benchmark(std::string name, const Func&& func) : name(std::move(name)), func(std::move(func)) {}
+  Benchmark(std::string name, Func&& func) : name(std::move(name)), func(std::forward<Func>(func)) {}
   const std::string& get_name() const { return name; }
   void run() const { func(); };
   void operator()() const { run(); }
@@ -27,8 +28,8 @@ public:
   BenchmarkRunner(int runtime_ms) : runtime_ms(runtime_ms) {}
   BenchmarkRunner() : BenchmarkRunner(1000){};
 
-  template <typename Func> void run(std::string description, const Func&& func) {
-    run(Benchmark{std::move(description), std::move(func)});
+  template <typename Func> void run(std::string description, Func&& func) {
+    run(Benchmark{std::move(description), std::forward<Func>(func)});
   }
 
   template <typename Func> void run(const Benchmark<Func>& benchmark) {
