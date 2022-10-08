@@ -2,10 +2,15 @@
 
 ## Compiling
 
-The Benchmark Library project is a CMake project.
+The Benchmark Library project is built with CMake.
 
 To add this to your own CMake project use `add_subdirectory(<bench subdirectory>)` to your own `CMakeLists.txt` and
-link against the library `bench`. 
+link against the library `bench`.
+
+### Prerequisites
+
+- A C++ compiler capable of the C++20 standard
+- CMake
 
 ### Build Instructions
 
