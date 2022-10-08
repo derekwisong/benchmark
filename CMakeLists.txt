@@ -43,12 +43,12 @@ add_library(bench
   ${HEADER_FILES})
 
 target_include_directories(bench PUBLIC include)
-set_property(TARGET bench PROPERTY CXX_STANDARD 17)
+set_property(TARGET bench PROPERTY CXX_STANDARD 20)
 
 add_executable(benchmark src/main.cpp ${HEADER_FILES})
 target_link_libraries(benchmark bench)
 target_include_directories(benchmark PRIVATE include)
-set_property(TARGET benchmark PROPERTY CXX_STANDARD 17)
+set_property(TARGET benchmark PROPERTY CXX_STANDARD 20)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

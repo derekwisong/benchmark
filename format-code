@@ -65,7 +65,7 @@ def main() -> None:
     format_files(
         root,
         extensions=[".h", ".cpp"],
-        exclude_dirs=["build"],
+        exclude_dirs=["build", "vendor"],
         formatter=clang_format)
 
     # Format python script (this script)

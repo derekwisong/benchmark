@@ -8,6 +8,6 @@ namespace bench::display {
 
 std::string format_cps(double cps);
 std::string format_spc(double spc);
-void print_run_results(const std::string& description, int runtime_ms, const bench::timing::timed_run_t& results);
+void print_run_results(const std::string& description, int runtime_ms, const bench::timing::TimedRunResults& results);
 
 } // namespace bench::display

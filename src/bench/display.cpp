@@ -13,7 +13,7 @@ std::string format_cps(double cps) {
       {1e9, "ns"},
   };
 
-  for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) {
+  for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) {  //NOLINT (modernize-loop-convert)
     const auto scale = iter->first;
     const auto& name = iter->second;
     if (cps >= scale) {
@@ -31,9 +31,9 @@ std::string format_spc(double spc) {
       {1e-0, {1e-3, "ms"}},
   };
 
-  for (auto iter = scales.begin(); iter != scales.end(); ++iter) {
-    const auto level = iter->first;
-    const auto& [scale, name] = iter->second;
+  for (const auto& iter : scales) {
+    const auto level = iter.first;
+    const auto& [scale, name] = iter.second;
     if (spc < level) {
       return std::to_string(spc / scale) + " " + name + "/call";
     }
@@ -42,11 +42,16 @@ std::string format_spc(double spc) {
   return std::to_string(spc) + " sec/call";
 }
 
-void print_run_results(const std::string& description, int runtime_ms, const bench::timing::timed_run_t& results) {
-  auto [count, calls_per_sec, sec_per_call] = results;
-  std::cout << std::left << std::setw(35) << description << std::right << std::setw(15) << count << " calls in "
-            << runtime_ms << "ms " << std::right << std::setw(25) << format_cps(calls_per_sec) << std::right
-            << std::setw(25) << format_spc(sec_per_call) << std::endl;
+void print_run_results(const std::string& description, int runtime_ms, const bench::timing::TimedRunResults& results) {
+  static const int WIDTH_DESC_COL = 35;
+  static const int WIDTH_COUNT_COL = 15;
+  static const int WIDTH_CPS_COL = 25;
+  static const int WIDTH_SPC_COL = 25;
+  std::cout << std::left << std::setw(WIDTH_DESC_COL) << description;
+  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.counter << " calls in " << runtime_ms << "ms ";
+  std::cout << std::right << std::setw(WIDTH_CPS_COL) << format_cps(results.calls_per_second);
+  std::cout << std::right << std::setw(WIDTH_SPC_COL) << format_spc(results.seconds_per_call);
+  std::cout << std::endl;
 }
 
 } // namespace bench::display

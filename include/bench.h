@@ -6,35 +6,41 @@
 #include "bench/cpu.h"
 #include "bench/fileio.h"
 #include "bench/memory.h"
+#include "bench/timing.h"
 #include <type_traits>
 
 namespace bench {
 
 template <typename Func> class Benchmark {
   const std::string name;
-  typename std::conditional<std::is_function<Func>::value, typename std::add_pointer<Func>::type, Func>::type func;
+  Func&& func;
 
 public:
   Benchmark(std::string name, Func&& func) : name(std::move(name)), func(std::forward<Func>(func)) {}
+  Benchmark(std::string name, Func& func) : name(std::move(name)), func(std::forward<Func>(func)) {}
   const std::string& get_name() const { return name; }
   void run() const { func(); };
   void operator()() const { run(); }
 };
 
 class BenchmarkRunner {
+  static const int DEFAULT_RUNTIME_MS = 100;
   int runtime_ms;
 
 public:
   BenchmarkRunner(int runtime_ms) : runtime_ms(runtime_ms) {}
-  BenchmarkRunner() : BenchmarkRunner(1000){};
+  BenchmarkRunner() : BenchmarkRunner(DEFAULT_RUNTIME_MS){};
 
-  template <typename Func> void run(std::string description, Func&& func) {
-    run(Benchmark{std::move(description), std::forward<Func>(func)});
+  template <typename Func> bench::timing::TimedRunResults run(std::string description, Func&& func) {
+    return run(Benchmark{std::move(description), std::forward<Func>(func)});
   }
 
-  template <typename Func> void run(const Benchmark<Func>& benchmark) {
+  template <typename Func> bench::timing::TimedRunResults run(const Benchmark<Func>& benchmark, bool display = true) {
     auto results = bench::timing::repeat_for_time(benchmark, runtime_ms);
-    bench::display::print_run_results(benchmark.get_name(), runtime_ms, results);
+    if (display) {
+      bench::display::print_run_results(benchmark.get_name(), runtime_ms, results);
+    }
+    return results;
   }
 };
 

@@ -7,9 +7,20 @@
 namespace bench::timing {
 namespace chrono = std::chrono;
 
-using timed_run_t = std::tuple<double, double, double>;
 
-template <typename Func> timed_run_t repeat_for_time(Func&& func, unsigned int milliseconds) {
+class TimedRunResults {
+  public:
+  const unsigned int duration_milliseconds;
+  const double counter;
+  const double calls_per_second;
+  const double seconds_per_call;
+
+  TimedRunResults(unsigned int duration_milliseconds, double counter, double calls_per_second, double seconds_per_call)
+    : duration_milliseconds(duration_milliseconds), counter(counter), calls_per_second(calls_per_second), seconds_per_call(seconds_per_call)
+    {}
+};
+
+template <typename Func> TimedRunResults repeat_for_time(Func&& func, unsigned int milliseconds) {
   using chrono::duration_cast;
   using clock_t = chrono::steady_clock;
 
@@ -28,12 +39,13 @@ template <typename Func> timed_run_t repeat_for_time(Func&& func, unsigned int m
   auto overage_ratio = actual_duration / scheduled_duration;
 
   auto actual_ns = duration_cast<chrono::nanoseconds>(actual_duration).count();
-  auto seconds = static_cast<double>(actual_ns) / 1e9;
+  static const double NANOS_PER_SECOND = 1e9;
+  auto seconds = static_cast<double>(actual_ns) / NANOS_PER_SECOND;
 
   double calls_per_second = static_cast<double>(counter) / seconds;
   double seconds_per_call = static_cast<double>(seconds) / counter;
   double scaled_counter = static_cast<double>(counter) / overage_ratio;
 
-  return std::make_tuple(scaled_counter, calls_per_second, seconds_per_call);
+  return {milliseconds, scaled_counter, calls_per_second, seconds_per_call};
 }
 } // namespace bench::timing

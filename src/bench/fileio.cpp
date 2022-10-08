@@ -25,7 +25,7 @@ void open_close_fopen(const char* path) {
   }
 #else
   file = std::fopen(path, "rb");
-  if (!file) {
+  if (file == nullptr) {
     return;
   }
 #endif
@@ -34,8 +34,8 @@ void open_close_fopen(const char* path) {
 }
 
 void stat_file(const char* path) {
-  struct stat st;
-  stat(path, &st);
+  struct stat stat_info{};
+  stat(path, &stat_info);
 }
 
 } // namespace bench::fileio

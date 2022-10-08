@@ -1,0 +1,18 @@
+---
+Checks: ^
+  cppcoreguidelines-pro-*,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  -modernize-use-nodiscard,
+  readability-*,
+  performance-*
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     llvm
+User:            derek
+# CheckOptions:
+#   - key:             llvm-else-after-return.WarnOnConditionVariables
+#     value:           'false'
+
+...
