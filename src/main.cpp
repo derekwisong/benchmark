@@ -51,8 +51,7 @@ int main(int argc, char** argv) {
   runner.run("open/close file (fopen)", [&] { bench::fileio::open_close_fopen(THIS_FILE); });
   runner.run("stat file", [&] { bench::fileio::stat_file(THIS_FILE); });
   runner.run("fill array of " + INTS_DESC, [&] { std::fill(integers.begin(), integers.end(), INT_FILL); });
-  runner.run("const random access from " + INTS_DESC,
-             [&] { bench::memory::random_access(integers.data(), NUM_INTS); });
+  runner.run("const random access from " + INTS_DESC, [&] { bench::memory::random_access(integers.data(), NUM_INTS); });
   runner.run(".size() random access from " + INTS_DESC,
              [&] { bench::memory::random_access(integers.data(), integers.size()); });
   runner.run(".size() random draw from " + INTS_DESC,

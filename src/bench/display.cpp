@@ -13,7 +13,7 @@ std::string format_cps(double cps) {
       {1e9, "ns"},
   };
 
-  for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) {  //NOLINT (modernize-loop-convert)
+  for (auto iter = scales.rbegin(); iter != scales.rend(); ++iter) { // NOLINT (modernize-loop-convert)
     const auto scale = iter->first;
     const auto& name = iter->second;
     if (cps >= scale) {

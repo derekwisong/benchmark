@@ -34,7 +34,7 @@ void open_close_fopen(const char* path) {
 }
 
 void stat_file(const char* path) {
-  struct stat stat_info{};
+  struct stat stat_info {};
   stat(path, &stat_info);
 }
 

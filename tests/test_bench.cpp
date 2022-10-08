@@ -6,7 +6,7 @@
 
 TEST(TestBench, TestRunLambdaOnce) {
   int index = 0;
-  auto lambda = [&index]{ ++index; };
+  auto lambda = [&index] { ++index; };
   bench::Benchmark benchmark{"Lambda", lambda};
   benchmark.run();
   EXPECT_EQ(index, 1);
@@ -14,7 +14,7 @@ TEST(TestBench, TestRunLambdaOnce) {
 
 TEST(TestBench, TestRunFunctorOnce) {
   class Functor {
-    public:
+  public:
     size_t counter = 0;
     void operator()() { ++counter; }
   } functor;
