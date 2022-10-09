@@ -21,7 +21,7 @@ template <typename Type, size_t count> void new_delete_a() {
   delete[] obj;
 }
 
-size_t random_index(size_t size) { return std::rand() % size; }
+size_t random_index(size_t size);
 
 template <typename Ptr> void random_access(const Ptr* array, size_t size) {
   auto val = array[random_index(size)]; // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)

@@ -1,4 +1,4 @@
-#include "bench/cpu.h"
+#include "bench/benchmarks/cpu.h"
 
 #include <cstdlib>
 

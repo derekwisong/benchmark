@@ -1,5 +1,4 @@
-include(CTest)
-enable_testing()
+
 
 set (CMAKE_CXX_STANDARD 20)
 

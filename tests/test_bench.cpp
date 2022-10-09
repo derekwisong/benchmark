@@ -1,5 +1,6 @@
 #include "bench.h"
 
+#include <bits/chrono.h>
 #include <gtest/gtest.h>
 
 #include <chrono>

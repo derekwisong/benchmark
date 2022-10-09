@@ -2,12 +2,7 @@
 
 #include "bench/display.h"
 
-// include the rest of the benchmark headers for convenience to users
-#include "bench/cpu.h"
-#include "bench/fileio.h"
-#include "bench/memory.h"
 #include "bench/timing.h"
-#include <type_traits>
 
 namespace bench {
 

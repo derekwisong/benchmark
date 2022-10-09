@@ -1,5 +1,7 @@
 #include "bench.h"
-#include "bench/cpu.h"
+#include "bench/benchmarks/cpu.h"
+#include "bench/benchmarks/memory.h"
+#include "bench/benchmarks/fileio.h"
 #include <chrono>
 #include <span>
 #include <vector>
