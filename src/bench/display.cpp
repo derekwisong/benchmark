@@ -48,7 +48,8 @@ void print_run_results(const std::string& description, int runtime_ms, const ben
   static const int WIDTH_CPS_COL = 25;
   static const int WIDTH_SPC_COL = 25;
   std::cout << std::left << std::setw(WIDTH_DESC_COL) << description;
-  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.scaled_iterations() << " calls in " << runtime_ms << "ms ";
+  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.scaled_iterations() << " calls in " << runtime_ms
+            << "ms ";
   std::cout << std::right << std::setw(WIDTH_CPS_COL) << format_cps(results.cps());
   std::cout << std::right << std::setw(WIDTH_SPC_COL) << format_spc(results.spc());
   std::cout << std::endl;

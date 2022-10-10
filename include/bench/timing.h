@@ -12,8 +12,8 @@ class Timer {
   using clock_t = chrono::high_resolution_clock;
   const clock_t::time_point start{clock_t::now()};
 
-  public:
-  Timer(): start(clock_t::now()) {}
+public:
+  Timer() : start(clock_t::now()) {}
   chrono::nanoseconds elapsed() const { return clock_t::now() - start; }
 };
 
@@ -23,9 +23,9 @@ public:
   const chrono::nanoseconds elapsed;
   const chrono::nanoseconds time_limit;
 
-  TimedRunResults(size_t iterations, chrono::nanoseconds elapsed, chrono::nanoseconds time_limit) :
-    iterations(iterations), elapsed(elapsed), time_limit(time_limit) {}
-  
+  TimedRunResults(size_t iterations, chrono::nanoseconds elapsed, chrono::nanoseconds time_limit)
+      : iterations(iterations), elapsed(elapsed), time_limit(time_limit) {}
+
   double scaled_iterations() const;
   double cps() const;
   double spc() const;
@@ -36,7 +36,6 @@ template <typename Func, typename Duration> TimedRunResults repeat_for(Func&& fu
   size_t iterations = 0;
 
   const Timer timer;
-
   while (timer.elapsed() < nanos_timelimit) {
     func();
     ++iterations;
