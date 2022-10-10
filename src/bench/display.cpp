@@ -43,14 +43,14 @@ std::string format_spc(double spc) {
 }
 
 void print_run_results(const std::string& description, int runtime_ms, const bench::timing::TimedRunResults& results) {
-  static const int WIDTH_DESC_COL = 35;
+  static const int WIDTH_DESC_COL = 50;
   static const int WIDTH_COUNT_COL = 15;
   static const int WIDTH_CPS_COL = 25;
   static const int WIDTH_SPC_COL = 25;
   std::cout << std::left << std::setw(WIDTH_DESC_COL) << description;
-  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.counter << " calls in " << runtime_ms << "ms ";
-  std::cout << std::right << std::setw(WIDTH_CPS_COL) << format_cps(results.calls_per_second);
-  std::cout << std::right << std::setw(WIDTH_SPC_COL) << format_spc(results.seconds_per_call);
+  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.scaled_iterations() << " calls in " << runtime_ms << "ms ";
+  std::cout << std::right << std::setw(WIDTH_CPS_COL) << format_cps(results.cps());
+  std::cout << std::right << std::setw(WIDTH_SPC_COL) << format_spc(results.spc());
   std::cout << std::endl;
 }
 

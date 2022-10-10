@@ -3,6 +3,7 @@
 #include "bench/display.h"
 
 #include "bench/timing.h"
+#include <chrono>
 
 namespace bench {
 
@@ -20,7 +21,7 @@ public:
 
 class BenchmarkRunner {
   static const int DEFAULT_RUNTIME_MS = 100;
-  int runtime_ms;
+  const int runtime_ms;
 
 public:
   BenchmarkRunner(int runtime_ms) : runtime_ms(runtime_ms) {}
@@ -30,13 +31,11 @@ public:
     return run(Benchmark{std::move(description), std::forward<Func>(func)});
   }
 
-  template <typename Func> bench::timing::TimedRunResults run(const Benchmark<Func>& benchmark, bool display = true) {
-    auto results = bench::timing::repeat_for_time(benchmark, runtime_ms);
-    if (display) {
-      bench::display::print_run_results(benchmark.get_name(), runtime_ms, results);
-    }
-    return results;
+  template <typename Func> bench::timing::TimedRunResults run(const Benchmark<Func>& benchmark) {
+    return bench::timing::repeat_for(benchmark, std::chrono::milliseconds(runtime_ms));
   }
+
+  int runtime() const { return runtime_ms; }
 };
 
 } // namespace bench

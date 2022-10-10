@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bits/chrono.h>
 #include <chrono>
 #include <iostream>
 #include <tuple>
@@ -7,44 +8,41 @@
 namespace bench::timing {
 namespace chrono = std::chrono;
 
-class TimedRunResults {
-public:
-  const unsigned int duration_milliseconds;
-  const double counter;
-  const double calls_per_second;
-  const double seconds_per_call;
+class Timer {
+  using clock_t = chrono::high_resolution_clock;
+  const clock_t::time_point start{clock_t::now()};
 
-  TimedRunResults(unsigned int duration_milliseconds, double counter, double calls_per_second, double seconds_per_call)
-      : duration_milliseconds(duration_milliseconds), counter(counter), calls_per_second(calls_per_second),
-        seconds_per_call(seconds_per_call) {}
+  public:
+  Timer(): start(clock_t::now()) {}
+  chrono::nanoseconds elapsed() const { return clock_t::now() - start; }
 };
 
-template <typename Func> TimedRunResults repeat_for_time(Func&& func, unsigned int milliseconds) {
-  using chrono::duration_cast;
-  using clock_t = chrono::steady_clock;
+class TimedRunResults {
+public:
+  const size_t iterations;
+  const chrono::nanoseconds elapsed;
+  const chrono::nanoseconds time_limit;
 
-  auto start = clock_t::now();
-  auto scheduled_duration = chrono::milliseconds(milliseconds);
-  auto scheduled_end = start + scheduled_duration;
+  TimedRunResults(size_t iterations, chrono::nanoseconds elapsed, chrono::nanoseconds time_limit) :
+    iterations(iterations), elapsed(elapsed), time_limit(time_limit) {}
+  
+  double scaled_iterations() const;
+  double cps() const;
+  double spc() const;
+};
 
-  size_t counter;
-  clock_t::time_point now = start;
+template <typename Func, typename Duration> TimedRunResults repeat_for(Func&& func, Duration duration) {
+  const auto nanos_timelimit = chrono::duration_cast<chrono::nanoseconds>(duration);
+  size_t iterations = 0;
 
-  for (counter = 0; (now = clock_t::now()) < scheduled_end; ++counter) {
+  const Timer timer;
+
+  while (timer.elapsed() < nanos_timelimit) {
     func();
+    ++iterations;
   }
 
-  auto actual_duration = now - start;
-  auto overage_ratio = actual_duration / scheduled_duration;
-
-  auto actual_ns = duration_cast<chrono::nanoseconds>(actual_duration).count();
-  static const double NANOS_PER_SECOND = 1e9;
-  auto seconds = static_cast<double>(actual_ns) / NANOS_PER_SECOND;
-
-  double calls_per_second = static_cast<double>(counter) / seconds;
-  double seconds_per_call = static_cast<double>(seconds) / counter;
-  double scaled_counter = static_cast<double>(counter) / overage_ratio;
-
-  return {milliseconds, scaled_counter, calls_per_second, seconds_per_call};
+  return {iterations, timer.elapsed(), nanos_timelimit};
 }
+
 } // namespace bench::timing
