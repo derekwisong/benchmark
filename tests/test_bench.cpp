@@ -17,7 +17,10 @@ TEST(TestBench, TestRunFunctorOnce) {
   class Functor {
   public:
     size_t counter = 0;
-    void operator()() { ++counter; }
+
+    void operator()() {
+      ++counter;
+    }
   } functor;
 
   bench::Benchmark benchmark{"Functor", functor};

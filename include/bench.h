@@ -13,10 +13,20 @@ template <typename Func> class Benchmark {
 
 public:
   Benchmark(std::string name, Func&& func) : name(std::move(name)), func(std::forward<Func>(func)) {}
+
   Benchmark(std::string name, Func& func) : name(std::move(name)), func(std::forward<Func>(func)) {}
-  const std::string& get_name() const { return name; }
-  void run() const { func(); };
-  void operator()() const { run(); }
+
+  const std::string& get_name() const {
+    return name;
+  }
+
+  void run() const {
+    func();
+  };
+
+  void operator()() const {
+    run();
+  }
 };
 
 class BenchmarkRunner {
@@ -25,6 +35,7 @@ class BenchmarkRunner {
 
 public:
   BenchmarkRunner(int runtime_ms) : runtime_ms(runtime_ms) {}
+
   BenchmarkRunner() : BenchmarkRunner(DEFAULT_RUNTIME_MS){};
 
   template <typename Func> bench::timing::TimedRunResults run(std::string description, Func&& func) {
@@ -35,7 +46,9 @@ public:
     return bench::timing::repeat_for(benchmark, std::chrono::milliseconds(runtime_ms));
   }
 
-  int runtime() const { return runtime_ms; }
+  int runtime() const {
+    return runtime_ms;
+  }
 };
 
 } // namespace bench

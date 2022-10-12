@@ -17,6 +17,7 @@ class BusyLoop {
 
 public:
   BusyLoop(Duration duration) : duration(duration){};
+
   void operator()() const {
     const auto end = std::chrono::steady_clock::now() + duration;
     while (std::chrono::steady_clock::now() < end) {
@@ -29,7 +30,10 @@ template <typename Duration> class Sleeper {
 
 public:
   Sleeper(Duration duration) : duration(duration){};
-  void operator()() const { std::this_thread::sleep_for(duration); }
+
+  void operator()() const {
+    std::this_thread::sleep_for(duration);
+  }
 };
 
 void random_int();

@@ -3,6 +3,8 @@
 
 namespace bench::memory {
 
-size_t random_index(size_t size) { return std::rand() % size; }
+size_t random_index(size_t size) {
+  return std::rand() % size;
+}
 
 } // namespace bench::memory

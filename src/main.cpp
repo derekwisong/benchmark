@@ -14,7 +14,9 @@ struct TwoDoubles {
   double y = 0;
 };
 
-void randomize_seed() { std::srand(std::time(nullptr)); }
+void randomize_seed() {
+  std::srand(std::time(nullptr));
+}
 
 int main(int argc, char** argv) {
   const auto args = std::span(argv, static_cast<size_t>(argc));
@@ -37,11 +39,9 @@ int main(int argc, char** argv) {
   const std::chrono::milliseconds RUNTIME{100};
 
   auto run = [&](std::string&& description, auto&& func) {
-    //auto results = bench::timing::repeat_for(std::forward<decltype(func)>(func), RUNTIME);
-    auto stats = bench::timing::repeat_for_stats(std::forward<decltype(func)>(func), RUNTIME);
-    //bench::display::print_run_results(description, RUNTIME, results);
-    bench::display::print_run_results(description, RUNTIME, stats);
-    //std::cout << std::endl;
+    auto runtime = std::chrono::duration_cast<std::chrono::nanoseconds>(RUNTIME);
+    auto stats = bench::timing::repeat_for_stats(std::forward<decltype(func)>(func), runtime);
+    std::cout << description << " " << stats.avg() << "\n";
   };
 
   run("lambda no-op", [] {});

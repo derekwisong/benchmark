@@ -57,20 +57,20 @@ void print_run_results(const std::string& description, const std::chrono::nanose
   std::cout << std::endl;
 }
 
-void print_run_results(const std::string& description, const std::chrono::nanoseconds runtime,
-                       const bench::timing::TimedRunStats& stats) {
-  static const int WIDTH_DESC = 50;
-  constexpr int WIDTH = 15;
-  auto print = [&](int width, const auto& val) { std::cout << std::right << std::setw(width) << val; };
-  std::cout << std::left << std::setw(WIDTH_DESC) << description;
-  print(WIDTH, stats.iterations);
-  print(WIDTH, stats.scaled_iterations());
-  print(WIDTH, stats.min());
-  print(WIDTH, stats.max());
-  print(WIDTH, stats.median());
-  print(WIDTH, stats.avg());
-  print(WIDTH, stats.stdev());
-  std::cout << std::endl;
-}
+// void print_run_results(const std::string& description, const std::chrono::nanoseconds runtime,
+//                        const bench::timing::TimedRunStats& stats) {
+//   static const int WIDTH_DESC = 50;
+//   constexpr int WIDTH = 15;
+//   auto print = [&](int width, const auto& val) { std::cout << std::right << std::setw(width) << val; };
+//   std::cout << std::left << std::setw(WIDTH_DESC) << description;
+//   print(WIDTH, stats.iterations);
+//   print(WIDTH, stats.scaled_iterations());
+//   print(WIDTH, stats.min());
+//   print(WIDTH, stats.max());
+//   print(WIDTH, stats.median());
+//   print(WIDTH, stats.avg());
+//   print(WIDTH, stats.stdev());
+//   std::cout << std::endl;
+// }
 
 } // namespace bench::display

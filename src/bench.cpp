@@ -17,10 +17,22 @@ void* operator new(size_t size) {
 
 namespace bench {
 
-size_t new_calls() { return num_new; }
-size_t delete_calls() { return num_delete; }
-void reset_new() { num_new = 0; }
-void reset_delete() { num_delete = 0; }
+size_t new_calls() {
+  return num_new;
+}
+
+size_t delete_calls() {
+  return num_delete;
+}
+
+void reset_new() {
+  num_new = 0;
+}
+
+void reset_delete() {
+  num_delete = 0;
+}
+
 void reset_new_delete() {
   reset_new();
   reset_delete();
