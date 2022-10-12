@@ -1,20 +1,21 @@
 #pragma once
 
-#include <bits/chrono.h>
 #include <chrono>
 #include <iostream>
-#include <tuple>
+#include <vector>
 
 namespace bench::timing {
 namespace chrono = std::chrono;
 
 class Timer {
   using clock_t = chrono::high_resolution_clock;
-  const clock_t::time_point start{clock_t::now()};
+  clock_t::time_point start;
 
 public:
-  Timer() : start(clock_t::now()) {}
+  Timer() : start(now()) {}
   chrono::nanoseconds elapsed() const { return clock_t::now() - start; }
+  void reset() { start = now(); }
+  static clock_t::time_point now() { return clock_t::now(); }
 };
 
 class TimedRunResults {
@@ -31,7 +32,24 @@ public:
   double spc() const;
 };
 
-template <typename Func, typename Duration> TimedRunResults repeat_for(Func&& func, Duration duration) {
+class TimedRunStats : public TimedRunResults {
+public:
+  const std::vector<std::chrono::nanoseconds> samples;
+
+  TimedRunStats(size_t iterations, chrono::nanoseconds elapsed, chrono::nanoseconds time_limit,
+                std::vector<std::chrono::nanoseconds> samples)
+      : TimedRunResults(iterations, elapsed, time_limit), samples(std::move(samples)) {}
+  
+  double avg() const;
+  double max() const;
+  double median() const;
+  double min() const;
+  double stdev() const;
+  double variance() const;
+};
+
+template <typename Func, typename Duration>
+TimedRunResults repeat_for(Func&& func, Duration duration) {
   const auto nanos_timelimit = chrono::duration_cast<chrono::nanoseconds>(duration);
   size_t iterations = 0;
 
@@ -42,6 +60,22 @@ template <typename Func, typename Duration> TimedRunResults repeat_for(Func&& fu
   }
 
   return {iterations, timer.elapsed(), nanos_timelimit};
+}
+
+template <typename Func, typename Duration> TimedRunStats repeat_for_stats(Func&& func, Duration duration) {
+  const auto nanos_timelimit = chrono::duration_cast<chrono::nanoseconds>(duration);
+  size_t iterations = 0;
+  std::vector<std::chrono::nanoseconds> runtimes;
+
+  const Timer timer;
+  while (timer.elapsed() < nanos_timelimit) {
+    const Timer func_timer;
+    func();
+    runtimes.push_back(func_timer.elapsed());
+    ++iterations;
+  }
+
+  return {iterations, timer.elapsed(), nanos_timelimit, std::move(runtimes)};
 }
 
 } // namespace bench::timing

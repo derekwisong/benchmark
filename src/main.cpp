@@ -3,7 +3,9 @@
 #include "bench/benchmarks/fileio.h"
 #include "bench/benchmarks/memory.h"
 #include "bench/display.h"
+#include "bench/timing.h"
 #include <chrono>
+#include <ratio>
 #include <span>
 #include <vector>
 
@@ -25,7 +27,6 @@ int main(int argc, char** argv) {
   auto integers = std::vector<int>(NUM_INTS);
 
   // convenient named constants
-  static const unsigned int BENCHMARK_RUNTIME = 100; // milliseconds
   static const char* THIS_FILE = args[0];
   static const std::chrono::duration ONE_NANO = std::chrono::nanoseconds(1);
   static const std::chrono::duration ONE_MICRO = std::chrono::microseconds(1);
@@ -33,11 +34,14 @@ int main(int argc, char** argv) {
   static const std::chrono::duration ONE_MILLI = std::chrono::milliseconds(1);
   static const std::chrono::duration TWO_SEC = std::chrono::seconds(2);
 
-  bench::BenchmarkRunner runner(BENCHMARK_RUNTIME);
+  const std::chrono::milliseconds RUNTIME{100};
+
   auto run = [&](std::string&& description, auto&& func) {
-    bench::Benchmark benchmark(description, std::forward<decltype(func)>(func));
-    auto results = runner.run(benchmark);
-    bench::display::print_run_results(description, runner.runtime(), results);
+    //auto results = bench::timing::repeat_for(std::forward<decltype(func)>(func), RUNTIME);
+    auto stats = bench::timing::repeat_for_stats(std::forward<decltype(func)>(func), RUNTIME);
+    //bench::display::print_run_results(description, RUNTIME, results);
+    bench::display::print_run_results(description, RUNTIME, stats);
+    //std::cout << std::endl;
   };
 
   run("lambda no-op", [] {});

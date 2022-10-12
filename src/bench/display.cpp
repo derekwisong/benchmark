@@ -42,16 +42,34 @@ std::string format_spc(double spc) {
   return std::to_string(spc) + " sec/call";
 }
 
-void print_run_results(const std::string& description, int runtime_ms, const bench::timing::TimedRunResults& results) {
+void print_run_results(const std::string& description, const std::chrono::nanoseconds runtime,
+                       const bench::timing::TimedRunResults& results) {
   static const int WIDTH_DESC_COL = 50;
   static const int WIDTH_COUNT_COL = 15;
   static const int WIDTH_CPS_COL = 25;
   static const int WIDTH_SPC_COL = 25;
+  const auto runtime_ms = std::chrono::duration_cast<std::chrono::milliseconds>(runtime);
   std::cout << std::left << std::setw(WIDTH_DESC_COL) << description;
-  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.scaled_iterations() << " calls in " << runtime_ms
-            << "ms ";
+  std::cout << std::right << std::setw(WIDTH_COUNT_COL) << results.scaled_iterations() << " calls in "
+            << runtime_ms.count() << "ms ";
   std::cout << std::right << std::setw(WIDTH_CPS_COL) << format_cps(results.cps());
   std::cout << std::right << std::setw(WIDTH_SPC_COL) << format_spc(results.spc());
+  std::cout << std::endl;
+}
+
+void print_run_results(const std::string& description, const std::chrono::nanoseconds runtime,
+                       const bench::timing::TimedRunStats& stats) {
+  static const int WIDTH_DESC = 50;
+  constexpr int WIDTH = 15;
+  auto print = [&](int width, const auto& val) { std::cout << std::right << std::setw(width) << val; };
+  std::cout << std::left << std::setw(WIDTH_DESC) << description;
+  print(WIDTH, stats.iterations);
+  print(WIDTH, stats.scaled_iterations());
+  print(WIDTH, stats.min());
+  print(WIDTH, stats.max());
+  print(WIDTH, stats.median());
+  print(WIDTH, stats.avg());
+  print(WIDTH, stats.stdev());
   std::cout << std::endl;
 }
 
