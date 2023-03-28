@@ -47,18 +47,64 @@ public:
 template <typename Duration> class TimedRunStats {
   std::vector<Duration> samples;
 
+
+  Duration minimum{0};
+  Duration maximum{0};
+  double average{0};
+  Duration sum_squares{0};
+  Duration sum{0};
+  size_t count{0};
+
+  void update_median(const Duration& sample) {
+    
+  }
+
+  void update_sum_squares(const Duration& sample) {
+    sum_squares += Duration{(sample.count() * sample.count())};
+  }
+
+  void update_sum(const Duration& sample) {
+    sum += sample;
+  }
+
+  void update_average(const Duration& sample) {
+    average += (static_cast<double>(sample.count()) - average) / count;
+  }
+
+  void update_min(const Duration& sample) {
+    if (sample < minimum) {
+      minimum = sample;
+    }
+  }
+
+    void update_max(const Duration& sample) {
+    if (sample > maximum) {
+      maximum = sample;
+    }
+  }
+
 public:
-  void add_sample(Duration sample) {
+  void add_sample(const Duration& sample) {
     samples.push_back(sample);
+    ++count;
+    update_average(sample);
+    update_median(sample);
+    update_min(sample);
+    update_max(sample);
+    update_sum(sample);
+    update_sum_squares(sample);
   }
 
   double avg() const {
-    auto total = std::accumulate(samples.begin(), samples.end(), std::chrono::nanoseconds{0});
-    return static_cast<double>(total.count()) / samples.size();
+    return average;
   }
 
-  double max() const {
-    return std::max_element(samples.begin(), samples.end())->count();
+  Duration max() const {
+    return maximum;
+  }
+
+  double median2() const {
+    return 0;
   }
 
   double median() const {
@@ -77,8 +123,8 @@ public:
     return sorted[(sorted.size() - 1) / 2].count();
   }
 
-  double min() const {
-    return std::min_element(samples.begin(), samples.end())->count();
+  Duration min() const {
+    return minimum;
   };
 
   double stdev() const {
@@ -86,13 +132,8 @@ public:
   };
 
   double variance() const {
-    const auto mean = avg();
-    double sse = std::accumulate(samples.begin(), samples.end(), 0.0, [&](const auto& sse, const auto& sample) {
-      auto delta = sample.count() - mean;
-      return sse + (delta * delta);
-    });
-    return sse / samples.size();
-  };
+    return ((static_cast<double>(sum_squares.count())) / count) - (avg() * avg());
+  }
 };
 
 template <typename Func, typename Duration> TimedRunResults repeat_for(Func&& func, Duration duration) {

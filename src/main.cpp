@@ -5,6 +5,7 @@
 #include "bench/display.h"
 #include "bench/timing.h"
 #include <chrono>
+#include <iomanip>
 #include <ratio>
 #include <span>
 #include <vector>
@@ -38,10 +39,23 @@ int main(int argc, char** argv) {
 
   const std::chrono::milliseconds RUNTIME{100};
 
+  auto print = [&] (auto& stats) {
+    constexpr int WIDTH = 15;
+    std::cout << std::right << std::setw(WIDTH) << stats.avg();
+    std::cout << std::right << std::setw(WIDTH) << stats.median();
+    std::cout << std::right << std::setw(WIDTH) << stats.median2();
+
+    std::cout << std::right << std::setw(WIDTH) << stats.stdev();
+    std::cout << std::right << std::setw(WIDTH) << stats.variance();
+  };
+
   auto run = [&](std::string&& description, auto&& func) {
     auto runtime = std::chrono::duration_cast<std::chrono::nanoseconds>(RUNTIME);
     auto stats = bench::timing::repeat_for_stats(std::forward<decltype(func)>(func), runtime);
-    std::cout << description << " " << stats.avg() << "\n";
+    constexpr int DESC_WIDTH = 30;
+    std::cout << std::left << std::setw(DESC_WIDTH) << description;
+    print(stats);
+    std::cout << std::endl;
   };
 
   run("lambda no-op", [] {});
